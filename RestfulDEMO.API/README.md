@@ -67,4 +67,15 @@ Update-Database
 ```
 
 #### Controllers and Actions for CRUD operations and Async Programming
+
+#### Repository Pattern?
+	It is a desing patterns to separate the data access layer from the application.
+	It provides/exposses interface wihtout exposing the implementation.
+	Helps create abtractions, decoupling, consistency, and multiple data sources without affecting the application logic.
+
+	** The best practice is to inject the db context class (RestfulDbContextA) into a Repository Class which is then injected into the controller(s),
+	instead of having the db context class direclty injected into the controler(s).
 	
+	** In this way we decouple the controllers from the db context which frees the controllers implementation from the kind of database that is used in
+	the db context class. The controller will now only be aware of the "Interface" of the repository class which could now hold connection to ANY kind of
+	database, and not exclusively an SLQ server as we have currently.
