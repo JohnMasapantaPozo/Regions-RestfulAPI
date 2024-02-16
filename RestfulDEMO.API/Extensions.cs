@@ -17,6 +17,16 @@ namespace RestfulDEMO.API
             };
         }
 
+        public static Region DtoAsRegion(this UpdateRegionRequestDto updateRegionRequestDto)
+        {
+            return new Region
+            {
+                Code = updateRegionRequestDto.Code,
+                Name = updateRegionRequestDto.Name,
+                RegionImageUrl = updateRegionRequestDto.RegionImageUrl,
+            };
+        }
+
         public static DifficultyDto DifficultyAsDto(this Difficulty difficulty)
         {
             return new DifficultyDto

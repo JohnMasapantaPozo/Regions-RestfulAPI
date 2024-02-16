@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RestfulDEMO.API.Data;
+using RestfulDEMO.API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<RestfulDbContextA>(
     (options) => options.UseSqlServer(builder.Configuration.GetConnectionString("RestFulDEMOConnectionString"))
     );
+
+/* Inject SQL db repository
+*/
+builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
 
 var app = builder.Build();
 

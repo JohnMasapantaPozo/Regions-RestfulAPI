@@ -1,54 +1,40 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using RestfulDEMO.API.Data;
 using RestfulDEMO.API.Models.Domain;
 using RestfulDEMO.API.Models.Dtos;
+using RestfulDEMO.API.Repositories;
 
 namespace RestfulDEMO.API.Controllers
 {
-
     // htttps: //localhost:portnumber/api/regions
     [ApiController]
     [Route("api/[controller]")]
     public class RegionsController : ControllerBase
     {
-
-        // Hardcoded return
-        //[HttpGet]
-        //public IActionResult GetRegions()
-        //{
-        //var regions = new List<Region>
-        //{
-        //    new Region
-        //    {
-        //        Id = Guid.NewGuid(),
-        //        Name = "Bergen",
-        //        Code = "5007",
-        //        RegionImageUrl = "image/bergen/url"
-        //    },
-        //    new Region
-        //    {
-        //        Id = Guid.NewGuid(),
-        //        Name = "Oslo",
-        //        Code = "0572",
-        //        RegionImageUrl = "image/oslo/url"
-        //    }
-        //};
-
-        //return Ok(regions);
-        //}
-
+        /* 
+         * Deprecated in favor of the Regions SQL repository class.
+         
         private readonly RestfulDbContextA dbContext;
-
         public RegionsController(RestfulDbContextA dbContext)
         {
             this.dbContext = dbContext;
         }
+        */
 
-        // Route: GET/regions/id
+        private readonly IRegionRepository repository;
+
+        public RegionsController(IRegionRepository repository)
+        {
+            this.repository = repository;
+        }
+
+        
         [HttpGet]
-        public IActionResult GetAll()
+        // Route: GET/regions/id
+        public async Task<ActionResult> GetAll()
         {
             //// Domain models
             //var regionsDomain = dbContext.Regions.ToList();
@@ -69,20 +55,21 @@ namespace RestfulDEMO.API.Controllers
             //}
 
             // OR using the Extension class:
-            var regionsDto = dbContext.Regions.ToList().Select(
+            var regionsDto = (await repository.GetAllAsync()).Select(
                 region => Extensions.RegionAsDto(region)
                 );
 
             return Ok(regionsDto);
         }
 
-        // Route: GET/regions/id
+
         [HttpGet]
         [Route("{id:Guid}")]
-        public IActionResult GetById([FromRoute] Guid id)
+        // Route: GET/regions/id
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             //var region = this.dbContext.Regions.Find(id);
-            var region = dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            var region = await repository.GetByIdAsync(id);
             if (region == null)
             {
                 return NotFound();
@@ -90,9 +77,10 @@ namespace RestfulDEMO.API.Controllers
             return Ok(region.RegionAsDto());
         }
 
-        // Route: POST/regions
+        
         [HttpPost]
-        public IActionResult CreateRegion([FromBody] AddRegionRequestDto addRegionRequestDto)
+        // Route: POST/regions
+        public async Task<IActionResult> CreateRegion([FromBody] AddRegionRequestDto addRegionRequestDto)
         {
             var regionDomnainModel = new Region
             {
@@ -101,8 +89,7 @@ namespace RestfulDEMO.API.Controllers
                 RegionImageUrl = addRegionRequestDto.RegionImageUrl,
             };
 
-            this.dbContext.Regions.Add(regionDomnainModel);
-            this.dbContext.SaveChanges();
+            await repository.CreateAsync(regionDomnainModel);
 
             /* CreatedAtAction:
                 Heps us creating the location URL where our newly created resurce can be found.
@@ -122,39 +109,35 @@ namespace RestfulDEMO.API.Controllers
                 );
         }
 
-        // Route: UPDATE/regions/id
+        
         [HttpPut]
         [Route("{id:Guid}")]
-        public IActionResult UpdateById([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
+        // Route: UPDATE/regions/id
+        public async Task<IActionResult> UpdateById([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
-            var existingRegionDomainModel = this.dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            var existingRegionDomainModel = await repository.GetByIdAsync(id);
             if (existingRegionDomainModel == null)
             {
                 return NotFound();
             }
 
-            existingRegionDomainModel.Code = updateRegionRequestDto.Code;
-            existingRegionDomainModel.Name = updateRegionRequestDto.Name;
-            existingRegionDomainModel.RegionImageUrl = updateRegionRequestDto.RegionImageUrl;
-
-            this.dbContext.SaveChanges();
+            await repository.UpdateByIdAsync(id, updateRegionRequestDto.DtoAsRegion());
             return Ok(existingRegionDomainModel.RegionAsDto());
-
         }
+        
 
-        // Route: DELTE/regions/id
         [HttpDelete]
         [Route("{id:Guid}")]
-        public IActionResult DeleteteById([FromRoute] Guid id)
+        // Route: DELTE/regions/id
+        public async Task<IActionResult> DeleteteById([FromRoute] Guid id)
         {
-            var existingRegionDomainModel = this.dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            var existingRegionDomainModel = await repository.GetByIdAsync(id);
             if (existingRegionDomainModel == null)
             {
                 return NotFound();
             }
 
-            this.dbContext.Remove(existingRegionDomainModel);
-            this.dbContext.SaveChanges();
+            await repository.DeleteteByIdAsync(id);
 
             return NoContent();
         }
