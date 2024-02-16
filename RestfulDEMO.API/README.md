@@ -66,5 +66,5 @@ Add-Migration "Initial Migration"
 Update-Database
 ```
 
-#### Controllers and Actions for CRUD operations
-
+#### Controllers and Actions for CRUD operations and Async Programming
+	

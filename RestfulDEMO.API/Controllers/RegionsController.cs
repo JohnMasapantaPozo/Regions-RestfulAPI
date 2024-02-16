@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using RestfulDEMO.API.Data;
 using RestfulDEMO.API.Models.Domain;
@@ -48,7 +49,7 @@ namespace RestfulDEMO.API.Controllers
 
         // Route: GET/regions/id
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<ActionResult> GetAll()
         {
             //// Domain models
             //var regionsDomain = dbContext.Regions.ToList();
@@ -69,7 +70,7 @@ namespace RestfulDEMO.API.Controllers
             //}
 
             // OR using the Extension class:
-            var regionsDto = dbContext.Regions.ToList().Select(
+            var regionsDto = (await dbContext.Regions.ToListAsync()).Select(
                 region => Extensions.RegionAsDto(region)
                 );
 
@@ -79,10 +80,10 @@ namespace RestfulDEMO.API.Controllers
         // Route: GET/regions/id
         [HttpGet]
         [Route("{id:Guid}")]
-        public IActionResult GetById([FromRoute] Guid id)
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             //var region = this.dbContext.Regions.Find(id);
-            var region = dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            var region = await dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
             if (region == null)
             {
                 return NotFound();
@@ -92,7 +93,7 @@ namespace RestfulDEMO.API.Controllers
 
         // Route: POST/regions
         [HttpPost]
-        public IActionResult CreateRegion([FromBody] AddRegionRequestDto addRegionRequestDto)
+        public async Task<IActionResult> CreateRegion([FromBody] AddRegionRequestDto addRegionRequestDto)
         {
             var regionDomnainModel = new Region
             {
@@ -101,8 +102,8 @@ namespace RestfulDEMO.API.Controllers
                 RegionImageUrl = addRegionRequestDto.RegionImageUrl,
             };
 
-            this.dbContext.Regions.Add(regionDomnainModel);
-            this.dbContext.SaveChanges();
+            await this.dbContext.Regions.AddAsync(regionDomnainModel);
+            await this.dbContext.SaveChangesAsync();
 
             /* CreatedAtAction:
                 Heps us creating the location URL where our newly created resurce can be found.
@@ -125,9 +126,9 @@ namespace RestfulDEMO.API.Controllers
         // Route: UPDATE/regions/id
         [HttpPut]
         [Route("{id:Guid}")]
-        public IActionResult UpdateById([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
+        public async Task<IActionResult> UpdateById([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
-            var existingRegionDomainModel = this.dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            var existingRegionDomainModel = await this.dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
             if (existingRegionDomainModel == null)
             {
                 return NotFound();
@@ -137,7 +138,7 @@ namespace RestfulDEMO.API.Controllers
             existingRegionDomainModel.Name = updateRegionRequestDto.Name;
             existingRegionDomainModel.RegionImageUrl = updateRegionRequestDto.RegionImageUrl;
 
-            this.dbContext.SaveChanges();
+            await this.dbContext.SaveChangesAsync();
             return Ok(existingRegionDomainModel.RegionAsDto());
 
         }
@@ -145,16 +146,16 @@ namespace RestfulDEMO.API.Controllers
         // Route: DELTE/regions/id
         [HttpDelete]
         [Route("{id:Guid}")]
-        public IActionResult DeleteteById([FromRoute] Guid id)
+        public async Task<IActionResult> DeleteteById([FromRoute] Guid id)
         {
-            var existingRegionDomainModel = this.dbContext.Regions.FirstOrDefault(x => x.Id == id);
+            var existingRegionDomainModel = await this.dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
             if (existingRegionDomainModel == null)
             {
                 return NotFound();
             }
 
             this.dbContext.Remove(existingRegionDomainModel);
-            this.dbContext.SaveChanges();
+            await this.dbContext.SaveChangesAsync();
 
             return NoContent();
         }
