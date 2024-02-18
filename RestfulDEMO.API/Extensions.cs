@@ -44,10 +44,7 @@ namespace RestfulDEMO.API
                 Name = walk.Name,
                 Description = walk.Description,
                 LengthInKm = walk.LengthInKm,
-                WalkImageUrl = walk.WalkImageUrl,
-                DifficultyId = walk.DifficultyId,
-                Difficulty = walk.Difficulty,
-                Region = walk.Region,
+                WalkImageUrl = walk.WalkImageUrl
             };
         }
     }

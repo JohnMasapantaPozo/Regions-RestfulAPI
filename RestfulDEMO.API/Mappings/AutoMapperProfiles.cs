@@ -11,6 +11,12 @@ namespace RestfulDEMO.API.Mappings
             CreateMap<Region, RegionDto>().ReverseMap();
             CreateMap<AddRegionRequestDto, Region>().ReverseMap();
             CreateMap<UpdateRegionRequestDto, Region>().ReverseMap();
+
+            CreateMap<Walk, WalkDto>().ReverseMap();
+            CreateMap<AddWalksRequestDto, Walk>().ReverseMap();
+            CreateMap<UpdateWalkRequestDto, Walk>().ReverseMap();
+            
+            CreateMap<Difficulty, DifficultyDto>().ReverseMap();
         }
     }
 }

@@ -90,3 +90,8 @@ Update-Database
 	Open package manage console:
 		- Add-Migration "Seeding data for difficutlies and regions"
 		- Update-Database
+
+#### Navigation properties
+	Allow to navigate from one entity to another in a database.
+	Represent a relationship between entitites.
+	This will alllow return to the client data in related entities.

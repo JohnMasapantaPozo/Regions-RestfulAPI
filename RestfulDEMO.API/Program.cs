@@ -22,8 +22,9 @@ builder.Services.AddDbContext<RestfulDbContextA>(
     (options) => options.UseSqlServer(builder.Configuration.GetConnectionString("RestFulDEMOConnectionString"))
     );
 
-/* Inject SQL db repository*/
+/* Inject SQL db repositories*/
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
+builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
 
 /* Inject automapper*/
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));

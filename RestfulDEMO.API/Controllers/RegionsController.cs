@@ -36,7 +36,7 @@ namespace RestfulDEMO.API.Controllers
 
         
         [HttpGet]
-        // Route: GET/regions/id
+        // Route: GET/regions/
         public async Task<ActionResult> GetAll()
         {
             //// Domain models
