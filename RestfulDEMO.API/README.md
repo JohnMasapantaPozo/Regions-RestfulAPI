@@ -79,3 +79,8 @@ Update-Database
 	** In this way we decouple the controllers from the db context which frees the controllers implementation from the kind of database that is used in
 	the db context class. The controller will now only be aware of the "Interface" of the repository class which could now hold connection to ANY kind of
 	database, and not exclusively an SLQ server as we have currently.
+
+#### Automapper
+	Object to object mapper
+	Map between DTOs and Domain Models and vice-versa.
+

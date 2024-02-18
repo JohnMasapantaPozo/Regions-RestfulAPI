@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using RestfulDEMO.API.Data;
+using RestfulDEMO.API.Mappings;
 using RestfulDEMO.API.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,9 +22,12 @@ builder.Services.AddDbContext<RestfulDbContextA>(
     (options) => options.UseSqlServer(builder.Configuration.GetConnectionString("RestFulDEMOConnectionString"))
     );
 
-/* Inject SQL db repository
-*/
+/* Inject SQL db repository*/
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
+
+/* Inject automapper*/
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
+//builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 var app = builder.Build();
 
