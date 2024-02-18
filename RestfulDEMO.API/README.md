@@ -84,3 +84,9 @@ Update-Database
 	Object to object mapper
 	Map between DTOs and Domain Models and vice-versa.
 
+
+#### Seed data to the database and apply migration
+	Adding some data to the database from the db context class and apply a migration to get it ingested to the db.
+	Open package manage console:
+		- Add-Migration "Seeding data for difficutlies and regions"
+		- Update-Database

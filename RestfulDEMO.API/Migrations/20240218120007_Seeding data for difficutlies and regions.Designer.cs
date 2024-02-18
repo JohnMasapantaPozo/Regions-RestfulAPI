@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RestfulDEMO.API.Data;
 
@@ -11,9 +12,11 @@ using RestfulDEMO.API.Data;
 namespace RestfulDEMO.API.Migrations
 {
     [DbContext(typeof(RestfulDbContextA))]
-    partial class RestfulDbContextAModelSnapshot : ModelSnapshot
+    [Migration("20240218120007_Seeding data for difficutlies and regions")]
+    partial class Seedingdatafordifficutliesandregions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
