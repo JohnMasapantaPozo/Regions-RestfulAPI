@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -25,21 +26,24 @@ namespace RestfulDEMO.API.Controllers
         */
 
         private readonly IRegionRepository repository;
+        private readonly IMapper mapper;
 
-        public RegionsController(IRegionRepository repository)
+        public RegionsController(IRegionRepository repository, IMapper mapper)
         {
             this.repository = repository;
+            this.mapper = mapper;
         }
 
         
         [HttpGet]
-        // Route: GET/regions/id
+        // Route: GET/regions/
         public async Task<ActionResult> GetAll()
         {
             //// Domain models
             //var regionsDomain = dbContext.Regions.ToList();
 
-            //// Cast Domain model to RegionDto
+            //// 1. Cast Domain model to RegionDto
+            ///
             //var regionsDto = new List<RegionDto>();
             //foreach (var region in regionsDomain)
             //{
@@ -54,12 +58,15 @@ namespace RestfulDEMO.API.Controllers
             //    );
             //}
 
-            // OR using the Extension class:
-            var regionsDto = (await repository.GetAllAsync()).Select(
-                region => Extensions.RegionAsDto(region)
-                );
+            // 2. OR using the Extension class:
 
-            return Ok(regionsDto);
+            //var regionsDomain = (await repository.GetAllAsync())
+            //    .Select(region => Extensions.RegionAsDto(region));
+            //return Ok(regionsDomain);
+
+            // 3. OR using the Mapping Automapper class:
+            var regionsDomain = (await repository.GetAllAsync());
+            return Ok(mapper.Map<List<RegionDto>>(regionsDomain));
         }
 
 
@@ -68,13 +75,15 @@ namespace RestfulDEMO.API.Controllers
         // Route: GET/regions/id
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
-            //var region = this.dbContext.Regions.Find(id);
             var region = await repository.GetByIdAsync(id);
             if (region == null)
             {
                 return NotFound();
             }
-            return Ok(region.RegionAsDto());
+            return Ok(
+                //region.RegionAsDto()
+                mapper.Map<RegionDto>(region)
+                );
         }
 
         
@@ -82,13 +91,8 @@ namespace RestfulDEMO.API.Controllers
         // Route: POST/regions
         public async Task<IActionResult> CreateRegion([FromBody] AddRegionRequestDto addRegionRequestDto)
         {
-            var regionDomnainModel = new Region
-            {
-                Code = addRegionRequestDto.Code,
-                Name = addRegionRequestDto.Name,
-                RegionImageUrl = addRegionRequestDto.RegionImageUrl,
-            };
 
+            var regionDomnainModel = mapper.Map<Region>(addRegionRequestDto);
             await repository.CreateAsync(regionDomnainModel);
 
             /* CreatedAtAction:
@@ -105,7 +109,8 @@ namespace RestfulDEMO.API.Controllers
             return CreatedAtAction(
                 nameof(GetById),
                 new { id = regionDomnainModel.Id },
-                regionDomnainModel.RegionAsDto()
+                //regionDomnainModel.RegionAsDto()
+                mapper.Map<RegionDto>(regionDomnainModel)
                 );
         }
 
@@ -121,8 +126,16 @@ namespace RestfulDEMO.API.Controllers
                 return NotFound();
             }
 
-            await repository.UpdateByIdAsync(id, updateRegionRequestDto.DtoAsRegion());
-            return Ok(existingRegionDomainModel.RegionAsDto());
+            await repository.UpdateByIdAsync(
+                id,
+                mapper.Map<Region>(updateRegionRequestDto)
+                //updateRegionRequestDto.DtoAsRegion()
+                );
+
+            return Ok(
+                //existingRegionDomainModel.RegionAsDto()
+                mapper.Map<RegionDto>(existingRegionDomainModel)
+                ); ;
         }
         
 

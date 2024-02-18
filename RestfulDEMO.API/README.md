@@ -79,3 +79,19 @@ Update-Database
 	** In this way we decouple the controllers from the db context which frees the controllers implementation from the kind of database that is used in
 	the db context class. The controller will now only be aware of the "Interface" of the repository class which could now hold connection to ANY kind of
 	database, and not exclusively an SLQ server as we have currently.
+
+#### Automapper
+	Object to object mapper
+	Map between DTOs and Domain Models and vice-versa.
+
+
+#### Seed data to the database and apply migration
+	Adding some data to the database from the db context class and apply a migration to get it ingested to the db.
+	Open package manage console:
+		- Add-Migration "Seeding data for difficutlies and regions"
+		- Update-Database
+
+#### Navigation properties
+	Allow to navigate from one entity to another in a database.
+	Represent a relationship between entitites.
+	This will alllow return to the client data in related entities.
