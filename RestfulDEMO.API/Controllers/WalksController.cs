@@ -46,10 +46,16 @@ namespace RestfulDEMO.API.Controllers
         // Route: POST/walks
         public async Task<ActionResult> CreateAsync([FromBody] AddWalksRequestDto addWalksRequestDto)
         {
-            var walkDomainModel = mapper.Map<Walk>(addWalksRequestDto);
-            await walkRepository.CreateAsync(walkDomainModel);
+            if (ModelState.IsValid)
+            {
+                var walkDomainModel = mapper.Map<Walk>(addWalksRequestDto);
+                await walkRepository.CreateAsync(walkDomainModel);
 
-            return Ok(mapper.Map<WalkDto>(walkDomainModel));
+                return Ok(mapper.Map<WalkDto>(walkDomainModel));
+            } else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpPut]
@@ -57,17 +63,24 @@ namespace RestfulDEMO.API.Controllers
         // Route: UPDATE/walk/id
         public async Task<IActionResult> UpdateById([FromRoute] Guid id, [FromBody] UpdateWalkRequestDto updateWalkRequestDto)
         {
-            var existingWalkDomainModel = await walkRepository.GetByIdAsync(id);
-            if (existingWalkDomainModel == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                var existingWalkDomainModel = await walkRepository.GetByIdAsync(id);
+                if (existingWalkDomainModel == null)
+                {
+                    return NotFound();
+                }
+
+                await walkRepository.UpdateByIdAsync(
+                    id, mapper.Map<Walk>(updateWalkRequestDto)
+                    );
+
+                return Ok(mapper.Map<WalkDto>(existingWalkDomainModel));
             }
-
-            await walkRepository.UpdateByIdAsync(
-                id, mapper.Map<Walk>(updateWalkRequestDto)
-                );
-
-            return Ok(mapper.Map<WalkDto>(existingWalkDomainModel));
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [HttpDelete]

@@ -91,27 +91,33 @@ namespace RestfulDEMO.API.Controllers
         // Route: POST/regions
         public async Task<IActionResult> CreateRegion([FromBody] AddRegionRequestDto addRegionRequestDto)
         {
+            if (ModelState.IsValid)
+            {
+                var regionDomnainModel = mapper.Map<Region>(addRegionRequestDto);
+                await repository.CreateAsync(regionDomnainModel);
 
-            var regionDomnainModel = mapper.Map<Region>(addRegionRequestDto);
-            await repository.CreateAsync(regionDomnainModel);
+                /* CreatedAtAction:
+                    Heps us creating the location URL where our newly created resurce can be found.
 
-            /* CreatedAtAction:
-                Heps us creating the location URL where our newly created resurce can be found.
+                    Response e.g., 
 
-                Response e.g., 
+                    content-type: application/json; charset=utf-8 
+                    date: Sat20 Jan 2024 12:38:08 GMT 
+                    location: https://localhost:7008/api/Regions/9da108a6-28f9-41c2-fefa-08dc2806196d 
+                    server: Kestrel
+                */
 
-                content-type: application/json; charset=utf-8 
-                date: Sat20 Jan 2024 12:38:08 GMT 
-                location: https://localhost:7008/api/Regions/9da108a6-28f9-41c2-fefa-08dc2806196d 
-                server: Kestrel
-            */
+                return CreatedAtAction(
+                    nameof(GetById),
+                    new { id = regionDomnainModel.Id },
+                    //regionDomnainModel.RegionAsDto()
+                    mapper.Map<RegionDto>(regionDomnainModel)
+                    );
+            } else
+            {
+                return BadRequest();
+            }
 
-            return CreatedAtAction(
-                nameof(GetById),
-                new { id = regionDomnainModel.Id },
-                //regionDomnainModel.RegionAsDto()
-                mapper.Map<RegionDto>(regionDomnainModel)
-                );
         }
 
         
@@ -120,22 +126,28 @@ namespace RestfulDEMO.API.Controllers
         // Route: UPDATE/regions/id
         public async Task<IActionResult> UpdateById([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
-            var existingRegionDomainModel = await repository.GetByIdAsync(id);
-            if (existingRegionDomainModel == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                var existingRegionDomainModel = await repository.GetByIdAsync(id);
+                if (existingRegionDomainModel == null)
+                {
+                    return NotFound();
+                }
+
+                await repository.UpdateByIdAsync(
+                    id,
+                    mapper.Map<Region>(updateRegionRequestDto)
+                    //updateRegionRequestDto.DtoAsRegion()
+                    );
+
+                return Ok(
+                    //existingRegionDomainModel.RegionAsDto()
+                    mapper.Map<RegionDto>(existingRegionDomainModel)
+                    ); ;
+            } else
+            {
+                return BadRequest();
             }
-
-            await repository.UpdateByIdAsync(
-                id,
-                mapper.Map<Region>(updateRegionRequestDto)
-                //updateRegionRequestDto.DtoAsRegion()
-                );
-
-            return Ok(
-                //existingRegionDomainModel.RegionAsDto()
-                mapper.Map<RegionDto>(existingRegionDomainModel)
-                ); ;
         }
         
 
