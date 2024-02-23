@@ -21,10 +21,19 @@ namespace RestfulDEMO.API.Controllers
         }
 
         [HttpGet]
-        // Route: GET/walks/
-        public async Task<ActionResult> GetAll()
+        // Route: GET/walks?filterOn=Name&filterQuery=Track&sortBy=Nme&isAscending=true&pageNumber=1&pageSize=10
+        public async Task<ActionResult> GetAll(
+            [FromQuery] string? filterOn,
+            [FromQuery] string? filterQuery,
+            [FromQuery] string? sortBy,
+            [FromQuery] bool? isAscending,
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 1000
+            )
         {
-            var walksDomain = (await walkRepository.GetAllAsync());
+            var walksDomain = (await walkRepository.GetAllAsync(
+                filterOn, filterQuery, sortBy, isAscending ?? true, pageNumber, pageSize));
+
             return Ok(mapper.Map<List<WalkDto>>(walksDomain));
         }
 
@@ -43,6 +52,7 @@ namespace RestfulDEMO.API.Controllers
 
 
         [HttpPost]
+        [CustomActionFilters.ValidateModelAttribute]
         // Route: POST/walks
         public async Task<ActionResult> CreateAsync([FromBody] AddWalksRequestDto addWalksRequestDto)
         {
@@ -50,10 +60,12 @@ namespace RestfulDEMO.API.Controllers
             await walkRepository.CreateAsync(walkDomainModel);
 
             return Ok(mapper.Map<WalkDto>(walkDomainModel));
+
         }
 
         [HttpPut]
         [Route("{id:Guid}")]
+        [CustomActionFilters.ValidateModelAttribute]
         // Route: UPDATE/walk/id
         public async Task<IActionResult> UpdateById([FromRoute] Guid id, [FromBody] UpdateWalkRequestDto updateWalkRequestDto)
         {

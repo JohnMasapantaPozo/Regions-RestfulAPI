@@ -34,7 +34,7 @@ namespace RestfulDEMO.API.Controllers
             this.mapper = mapper;
         }
 
-        
+
         [HttpGet]
         // Route: GET/regions/
         public async Task<ActionResult> GetAll()
@@ -86,12 +86,12 @@ namespace RestfulDEMO.API.Controllers
                 );
         }
 
-        
+
         [HttpPost]
+        [CustomActionFilters.ValidateModelAttribute]
         // Route: POST/regions
         public async Task<IActionResult> CreateRegion([FromBody] AddRegionRequestDto addRegionRequestDto)
         {
-
             var regionDomnainModel = mapper.Map<Region>(addRegionRequestDto);
             await repository.CreateAsync(regionDomnainModel);
 
@@ -110,13 +110,13 @@ namespace RestfulDEMO.API.Controllers
                 nameof(GetById),
                 new { id = regionDomnainModel.Id },
                 //regionDomnainModel.RegionAsDto()
-                mapper.Map<RegionDto>(regionDomnainModel)
-                );
+                mapper.Map<RegionDto>(regionDomnainModel));
         }
 
         
         [HttpPut]
         [Route("{id:Guid}")]
+        [CustomActionFilters.ValidateModelAttribute]
         // Route: UPDATE/regions/id
         public async Task<IActionResult> UpdateById([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
@@ -135,7 +135,7 @@ namespace RestfulDEMO.API.Controllers
             return Ok(
                 //existingRegionDomainModel.RegionAsDto()
                 mapper.Map<RegionDto>(existingRegionDomainModel)
-                ); ;
+                );
         }
         
 
