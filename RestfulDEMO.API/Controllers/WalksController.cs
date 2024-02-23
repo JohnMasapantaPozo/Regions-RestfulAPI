@@ -43,44 +43,34 @@ namespace RestfulDEMO.API.Controllers
 
 
         [HttpPost]
+        [CustomActionFilters.ValidateModelAttribute]
         // Route: POST/walks
         public async Task<ActionResult> CreateAsync([FromBody] AddWalksRequestDto addWalksRequestDto)
         {
-            if (ModelState.IsValid)
-            {
-                var walkDomainModel = mapper.Map<Walk>(addWalksRequestDto);
-                await walkRepository.CreateAsync(walkDomainModel);
+            var walkDomainModel = mapper.Map<Walk>(addWalksRequestDto);
+            await walkRepository.CreateAsync(walkDomainModel);
 
-                return Ok(mapper.Map<WalkDto>(walkDomainModel));
-            } else
-            {
-                return BadRequest();
-            }
+            return Ok(mapper.Map<WalkDto>(walkDomainModel));
+
         }
 
         [HttpPut]
         [Route("{id:Guid}")]
+        [CustomActionFilters.ValidateModelAttribute]
         // Route: UPDATE/walk/id
         public async Task<IActionResult> UpdateById([FromRoute] Guid id, [FromBody] UpdateWalkRequestDto updateWalkRequestDto)
         {
-            if (ModelState.IsValid)
+            var existingWalkDomainModel = await walkRepository.GetByIdAsync(id);
+            if (existingWalkDomainModel == null)
             {
-                var existingWalkDomainModel = await walkRepository.GetByIdAsync(id);
-                if (existingWalkDomainModel == null)
-                {
-                    return NotFound();
-                }
-
-                await walkRepository.UpdateByIdAsync(
-                    id, mapper.Map<Walk>(updateWalkRequestDto)
-                    );
-
-                return Ok(mapper.Map<WalkDto>(existingWalkDomainModel));
+                return NotFound();
             }
-            else
-            {
-                return BadRequest();
-            }
+
+            await walkRepository.UpdateByIdAsync(
+                id, mapper.Map<Walk>(updateWalkRequestDto)
+                );
+
+            return Ok(mapper.Map<WalkDto>(existingWalkDomainModel));
         }
 
         [HttpDelete]
