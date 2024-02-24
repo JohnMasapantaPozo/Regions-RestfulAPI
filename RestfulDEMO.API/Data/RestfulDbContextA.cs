@@ -10,7 +10,8 @@ namespace RestfulDEMO.API.Data
          * It funtions as a bridge between the controllers and the database.
          */
 
-        public RestfulDbContextA(DbContextOptions dbContextOptions): base(dbContextOptions)
+        public RestfulDbContextA(
+            DbContextOptions<RestfulDbContextA> dbContextOptions): base(dbContextOptions)
         {
                         
         }

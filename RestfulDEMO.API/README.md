@@ -95,3 +95,45 @@ Update-Database
 	Allow to navigate from one entity to another in a database.
 	Represent a relationship between entitites.
 	This will alllow return to the client data in related entities.
+
+#### Authoziation and authentication
+	Authentication identifies the user using hir/her credential while authorization determines what kind of permisions a certain user has over the resources attempted to access.
+	
+	Stateless APIs often use token-based authentication mechanisms like JSON Web Tokens (JWT), OAuth, and others.
+
+	1. Auithentication Flow (JWT - JSON Web Token)
+	User login credentials -> API -> JWT Token -> Http calls (JWT Token) -> API checks JWT Token -> Returns the resources if succeds.
+
+	Dependencies:
+		- Microsoft.AspNetCore.Authentication.JwtBearer == 7.0.4
+		- Microsoft.IdentityModel.Tokens == 6.27.0
+		- System.IdentityModel.Tokens.Jwt == 6.27.0
+		- Microsoft.AspNetCore.Identity.EntityFrameworkCore == 7.0.4
+
+	2. Now it time to set up Authentication for our database
+		- Update connection string: RestFulDEMOAuthConnectionString
+		- Update Db context with roles (seed some users to the database): RestFulAuthDbContext
+		- Inject udated DB context and Identity: RestFulAuthDbContext
+		- Entitiy Framework migration.
+			Comands:
+			Add-Migration "Creating Auth Database" -Context "RestFulAuthDbContext"
+			Update-Database -Context "RestFulAuthDbContext"
+
+	3. Inject Identity dependencies
+
+	4. Auth Controller
+		Once we have injested identity as a service to our program.cs, we then need an Auth controller
+		to check register a new user in our Auth DB and to check for a user credentials when he/she
+		authenticates agains the api.
+
+	5. TokenRepository : ItokenRepository
+		A repository to handle the token creation/retrieval detached from the Auth Controller.
+
+	6. Implement Role based authorization on the Controllers
+		The [Authorize] decorator in the RegionsController protects all the routes for that specific controller but it
+		does not take into account the type of role the user attempting to acess the resources has.
+
+		To add role base authorization, each route should require its independent and specific type of role authorization
+		in order to be interacted with.
+
+	7. Enable the authorization featyure for swagger
