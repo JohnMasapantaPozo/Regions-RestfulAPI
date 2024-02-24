@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ namespace RestfulDEMO.API.Controllers
     // htttps: //localhost:portnumber/api/regions
     [ApiController]
     [Route("api/[controller]")]
+    //[Authorize]
     public class RegionsController : ControllerBase
     {
         /* 
@@ -36,6 +38,7 @@ namespace RestfulDEMO.API.Controllers
 
 
         [HttpGet]
+        [Authorize(Roles = "Reader")]
         // Route: GET/regions/
         public async Task<ActionResult> GetAll()
         {
@@ -72,6 +75,7 @@ namespace RestfulDEMO.API.Controllers
 
         [HttpGet]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Reader")]
         // Route: GET/regions/id
         public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
@@ -88,6 +92,7 @@ namespace RestfulDEMO.API.Controllers
 
 
         [HttpPost]
+        [Authorize(Roles = "Writer")]
         [CustomActionFilters.ValidateModelAttribute]
         // Route: POST/regions
         public async Task<IActionResult> CreateRegion([FromBody] AddRegionRequestDto addRegionRequestDto)
@@ -117,6 +122,7 @@ namespace RestfulDEMO.API.Controllers
         [HttpPut]
         [Route("{id:Guid}")]
         [CustomActionFilters.ValidateModelAttribute]
+        [Authorize(Roles = "Writer")]
         // Route: UPDATE/regions/id
         public async Task<IActionResult> UpdateById([FromRoute] Guid id, [FromBody] UpdateRegionRequestDto updateRegionRequestDto)
         {
@@ -141,6 +147,7 @@ namespace RestfulDEMO.API.Controllers
 
         [HttpDelete]
         [Route("{id:Guid}")]
+        [Authorize(Roles = "Writer")]
         // Route: DELTE/regions/id
         public async Task<IActionResult> DeleteteById([FromRoute] Guid id)
         {
