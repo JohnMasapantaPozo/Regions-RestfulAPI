@@ -8,6 +8,7 @@ using RestfulDEMO.API.Data;
 using RestfulDEMO.API.Models.Domain;
 using RestfulDEMO.API.Models.Dtos;
 using RestfulDEMO.API.Repositories;
+using System.Text.Json;
 
 namespace RestfulDEMO.API.Controllers
 {
@@ -29,11 +30,14 @@ namespace RestfulDEMO.API.Controllers
 
         private readonly IRegionRepository repository;
         private readonly IMapper mapper;
+        private readonly ILogger<RegionsController> logger;
 
-        public RegionsController(IRegionRepository repository, IMapper mapper)
+        public RegionsController(
+            IRegionRepository repository, IMapper mapper, ILogger<RegionsController> logger)
         {
             this.repository = repository;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
 
@@ -42,34 +46,52 @@ namespace RestfulDEMO.API.Controllers
         // Route: GET/regions/
         public async Task<ActionResult> GetAll()
         {
-            //// Domain models
-            //var regionsDomain = dbContext.Regions.ToList();
+            try
+            {
+                //throw new Exception("This is a custom exception");
 
-            //// 1. Cast Domain model to RegionDto
-            ///
-            //var regionsDto = new List<RegionDto>();
-            //foreach (var region in regionsDomain)
-            //{
-            //    regionsDto.Add(
-            //        new RegionDto()
-            //        {
-            //            Id = region.Id,
-            //            Code = region.Code,
-            //            Name = region.Name,
-            //            RegionImageUrl = region.RegionImageUrl,
-            //        }
-            //    );
-            //}
+                // Logger
+                logger.LogInformation(
+                    "GetAll action method was invoked!!");
 
-            // 2. OR using the Extension class:
+                //// Domain models
+                //var regionsDomain = dbContext.Regions.ToList();
 
-            //var regionsDomain = (await repository.GetAllAsync())
-            //    .Select(region => Extensions.RegionAsDto(region));
-            //return Ok(regionsDomain);
+                //// 1. Cast Domain model to RegionDto
+                ///
+                //var regionsDto = new List<RegionDto>();
+                //foreach (var region in regionsDomain)
+                //{
+                //    regionsDto.Add(
+                //        new RegionDto()
+                //        {
+                //            Id = region.Id,
+                //            Code = region.Code,
+                //            Name = region.Name,
+                //            RegionImageUrl = region.RegionImageUrl,
+                //        }
+                //    );
+                //}
 
-            // 3. OR using the Mapping Automapper class:
-            var regionsDomain = (await repository.GetAllAsync());
-            return Ok(mapper.Map<List<RegionDto>>(regionsDomain));
+                // 2. OR using the Extension class:
+
+                //var regionsDomain = (await repository.GetAllAsync())
+                //    .Select(region => Extensions.RegionAsDto(region));
+                //return Ok(regionsDomain);
+
+                // 3. OR using the Mapping Automapper class:
+                var regionsDomain = (await repository.GetAllAsync());
+
+                logger.LogInformation(
+                    $"Finished GetAll action method with data {JsonSerializer.Serialize(regionsDomain)}");
+
+                return Ok(mapper.Map<List<RegionDto>>(regionsDomain));
+
+            } catch (Exception ex)
+            {
+                logger.LogWarning(ex, ex.Message);
+                throw;
+            }           
         }
 
 
