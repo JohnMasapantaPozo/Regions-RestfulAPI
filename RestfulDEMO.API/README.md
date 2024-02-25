@@ -156,3 +156,12 @@ Update-Database
 		- Serilog.AspeNetCore
 		- Serilog.Sinks.Console
 		- Serilog.Sinks.File
+
+#### Global exception handling
+	Adding a middleware exception handling class to the builder. Program.cs
+	This middleware (ExceptionHandlerMiddleware) that will be able to handle all
+	exceptions in a consistent manner without having to add try-catch block in
+	every method for the controller.
+
+	Shotcut: To warp snippet Crt+k+s
+	
