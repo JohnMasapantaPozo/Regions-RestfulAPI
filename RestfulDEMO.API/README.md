@@ -137,3 +137,13 @@ Update-Database
 		in order to be interacted with.
 
 	7. Enable the authorization featyure for swagger
+
+#### Add image upload functionality
+	Add new Dto to the DB context and migrate the DB.
+	Commands:
+		- Add-Migration "Add Images table" -Context "RestfulDbContextA"
+		- Update-Database -Context "RestfulDbContextA"
+
+	Add a LocalImageRepository:IImageRepository and its respective ImmageController.
+	The image local repository will construct an https file path that will be used to serve the locally strored images.
+	Then the UseStaticFiles method in the api middleware pipeline will hel us make our static images to be served using the previously constructed https url.
