@@ -34,6 +34,11 @@ namespace RestfulDEMO.API.Controllers
             var walksDomain = (await walkRepository.GetAllAsync(
                 filterOn, filterQuery, sortBy, isAscending ?? true, pageNumber, pageSize));
 
+            // Add manual exception: Hanlded by ExceptionHandlerMiddleware
+            throw new Exception(
+                @"""This is a new custom exception that will be hanlde by the handled
+                and logged by our own ExceptionHandlerMiddleware""");
+
             return Ok(mapper.Map<List<WalkDto>>(walksDomain));
         }
 

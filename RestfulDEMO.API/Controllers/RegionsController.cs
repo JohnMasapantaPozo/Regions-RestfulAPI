@@ -48,7 +48,9 @@ namespace RestfulDEMO.API.Controllers
         {
             try
             {
-                //throw new Exception("This is a custom exception");
+                //throw new Exception(
+                //@"""This is a custom exception that is not yet handled
+                //by the ExceptionHandlerMiddleware""");
 
                 // Logger
                 logger.LogInformation(
