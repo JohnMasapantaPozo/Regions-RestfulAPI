@@ -7,6 +7,7 @@ using RestfulDEMO.API.Mappings;
 using RestfulDEMO.API.Repositories;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 /* A.0. Add controllers */
 builder.Services.AddControllers();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(
     // Add authentication and authorization feature to be available on swagger.
@@ -69,6 +71,7 @@ builder.Services.AddDbContext<RestFulAuthDbContext>(
 builder.Services.AddScoped<IRegionRepository, SQLRegionRepository>();
 builder.Services.AddScoped<IWalkRepository, SQLWalkRepository>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
+builder.Services.AddScoped<IImageRepository, LocalImageRepository>();
 
 /* A.3. Inject automapper*/
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
@@ -130,6 +133,21 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseStaticFiles(
+    /*
+     * Serving StatiC/Local files.
+        Note taht dotNet is unable to serve static files by itself and therefore UseStaticFiles needs to be made to be added here.
+        - By doing this every time we want to access the request path "/Images" -> httpS://localhost:1234/Images
+        we will be redirected to FileProvider physical path.
+        - By doing this we should have our static/local images being served:
+        For instance: https://localhost:7008/Images/MeWolf.jpg
+     */
+    new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Images")),
+        RequestPath = "/Images"
+    });
 
 app.MapControllers();
 
