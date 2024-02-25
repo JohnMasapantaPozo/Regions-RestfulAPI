@@ -147,3 +147,12 @@ Update-Database
 	Add a LocalImageRepository:IImageRepository and its respective ImmageController.
 	The image local repository will construct an https file path that will be used to serve the locally strored images.
 	Then the UseStaticFiles method in the api middleware pipeline will hel us make our static images to be served using the previously constructed https url.
+
+#### Logging
+	Inject a logger as dependenci and reuse it from the controllers.
+	Also write logs to a txt file.
+	Depndencies:
+		- Serilog
+		- Serilog.AspeNetCore
+		- Serilog.Sinks.Console
+		- Serilog.Sinks.File
