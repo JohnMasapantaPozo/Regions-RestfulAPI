@@ -1,0 +1,27 @@
+﻿@{
+}
+
+@model RestfulDEMO.UI.Models.AddRegionVewModel
+
+<h1 class="mt-3">Add Region</h1>
+
+<form method="post">
+    <div class="mt-3">
+        <label class="from-label">Code</label>
+        <input type="text" class="from-control" asp-for="Code"/>
+    </div>
+
+    <div class="mt-3">
+        <label class="from-label">Name</label>
+        <input type="text" class="from-control" asp-for="Name"/>
+    </div>
+
+    <div class="mt-3">
+        <label class="from-label">Image URL</label>
+        <input type="text" class="from-control" asp-for="RegionImageUrl" />
+    </div>
+
+    <div class="mt-3">
+        <button type="submit" class="btn btn-primary">Save</button>
+    </div>
+</form>
