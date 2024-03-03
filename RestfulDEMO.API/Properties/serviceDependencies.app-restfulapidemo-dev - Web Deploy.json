@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "mssql1": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/app-restfulapidemo-dev/providers/Microsoft.ServiceLinker/linkers/ConnectionStringsRestFulDEMOConnectionSt_6C2C12EFB8",
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/sqlserver-restfulapidemo-dev/databases/sqldb-restfulapidemo-dev",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:RestFulDEMOConnectionString",
+      "dynamicId": null
+    },
+    "mssql2": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/app-restfulapidemo-dev/providers/Microsoft.ServiceLinker/linkers/ConnectionStringsRestFulDEMOAuthConnecti_4F9225EBFF",
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/sqlserver-restfulapidemo-dev/databases/sqldb-restfulapidemo-dev",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:RestFulDEMOAuthConnectionString"
+    }
+  }
+}

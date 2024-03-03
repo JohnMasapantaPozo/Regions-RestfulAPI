@@ -164,4 +164,24 @@ Update-Database
 	every method for the controller.
 
 	Shotcut: To warp snippet Crt+k+s
-	
+
+#### API versioning
+	There are many way of achieving versioning:
+		- URL-based versioning
+		- Query parameter-based versioning
+		- Header-based versioning
+
+#### Consuming the Rest API and deployment to Azure
+	- Subscription name:
+	- resourse gorup: rg-restapidemo-dev
+	- app service: app-restdemo-dev
+	- sql server: sqlserver-restfulapidemo-dev.database.windows.net
+		Admin login:
+			User: restfulapidemoadmin - rg-restapidemo-dev-server-admin
+			Password: password123% - 4WGWD36T128LN777$
+	- sql database: sqldb-restfulapidemo-dev
+	- Publis RestfulDEMO.API solution to App service from Visual studio after creating a publish profile
+	and adding the the db and auth db connection strings to connect to the azure sql server.
+	- Once the app is published we need to add the connection string to azure and also apply the neede
+	db migrations we applied during development.
+	- Publish images too.
