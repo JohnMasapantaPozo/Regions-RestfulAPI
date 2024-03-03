@@ -177,8 +177,8 @@ Update-Database
 	- app service: app-restdemo-dev
 	- sql server: sqlserver-restfulapidemo-dev.database.windows.net
 		Admin login:
-			User: restfulapidemoadmin - rg-restapidemo-dev-server-admin
-			Password: password123% - 4WGWD36T128LN777$
+			User: restfulapidemoadmin
+			Password: password123%
 	- sql database: sqldb-restfulapidemo-dev
 	- Publis RestfulDEMO.API solution to App service from Visual studio after creating a publish profile
 	and adding the the db and auth db connection strings to connect to the azure sql server.
