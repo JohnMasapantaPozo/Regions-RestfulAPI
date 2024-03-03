@@ -113,7 +113,29 @@ namespace RestfulDEMO.UI.Controllers
             if (response is not null)
             {
                 // Redirect to Edit-Regions on success
-                return RedirectToAction("Edit", "Regions");
+                return RedirectToAction("Index", "Regions");
+            }
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(RegionDto request)
+        {
+            try
+            {
+                var client = httpClientFactory.CreateClient();
+
+                var httpResponseMessage = await client.DeleteAsync($"{this.baseServer}/api/Regions/{request.Id}");
+
+                httpResponseMessage.EnsureSuccessStatusCode();
+
+                // Redirect to Index-Regions on success
+                return RedirectToAction("Index", "Regions");
+            } 
+            catch (Exception ex)
+            {
+                // Log exception
             }
             return View();
         }
